@@ -91,8 +91,12 @@ var CustomerDB = {
         this.addresses.push(addressObj);
     },
     getAddressById: function(address_id) {
-        let addressWithId = this.addresses.filter(address => address.data.address_id = address_id);
-        console.log(`${addressWithId.data.address}, ${addressWithId.data.city}`);
+        let addressWithId = this.addresses.filter(address => {
+            if (address_id === address.data.address_id)
+                return address;
+        });
+
+        return addressWithId;
     },
     outputAllAddresses: function() {
         console.log(`All Addresses`);
@@ -113,12 +117,11 @@ var CustomerDB = {
     },
     outputAllStores: function() {
         console.log(`All Stores`);
+        
         this.stores.forEach(store => {
+            let storeAddressDetails = this.getAddressById(store.data.address_id);
             console.log(`Store ${store.data.store_id}: ${store.data.name}`);
-
-            // get the address with the specific address_id
-            // let address = this.addresses.filter(address => address.data.address_id == store.data.address_id);
-            this.getAddressById(store.data.address_id);
+            console.log(`Location: ${storeAddressDetails[0].data.address} ${storeAddressDetails[0].data.city}, ${storeAddressDetails[0].data.province}. ${storeAddressDetails[0].data.postal_code}`);
         });
     }
 };
