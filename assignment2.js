@@ -74,12 +74,15 @@ var CustomerDB = {
     },
     outputCustomersByStore: function(store_id) {
         let customersWithStore_Id = this.customers.filter(customer => customer.data.store_id == store_id);
-        let store = this.stores.filter(store => store.data.store_id == store_id);
-        console.log(`Customers in Store:${store.data.name}`);
+        let store = this.getStoreById(store_id);
+
+        console.log(`Customers in Store: ${store.name}`);
 
         customersWithStore_Id.forEach(customer => {
             console.log(`Customer ${customer.data.customer_id}: ${customer.data.first_name} ${customer.data.last_name} (${customer.data.email})`);
-            console.log(`Home address: ${address.data.city}, ${address.data.province}. ${address.data.postal_code}`);
+
+            let address = this.getAddressById(customer.data.address_id);
+            console.log(`Home address: ${address[0].data.city}, ${address[0].data.province}. ${address[0].data.postal_code}`);
             console.log(`Joined: ${customer.data.add_date}\n`);
         })
     },
@@ -93,7 +96,7 @@ var CustomerDB = {
     getAddressById: function(address_id) {
         let addressWithId = this.addresses.filter(address => {
             if (address_id === address.data.address_id)
-                return address;
+                return address.data;
         });
 
         return addressWithId;
@@ -112,8 +115,8 @@ var CustomerDB = {
         this.addresses.push(storeObj);
     },
     getStoreById: function(store_id) {
-        let storeWithId = this.address.filter(address => address.data.store_id == store_id);
-        // output the above store
+        let store = this.stores.filter(store => store.data.store_id == store_id);
+        return store[0].data;
     },
     outputAllStores: function() {
         console.log(`All Stores`);
@@ -168,9 +171,9 @@ console.log("--------------------------\n\n");
 
 // // output all customers in the "Main Branch"
 
-// console.log("CustomerDB.outputCustomersByStore(297);\n\n--------------------------\n\n");
-// CustomerDB.outputCustomersByStore(297);
-// console.log("--------------------------\n\n"); 
+console.log("CustomerDB.outputCustomersByStore(297);\n\n--------------------------\n\n");
+CustomerDB.outputCustomersByStore(297);
+console.log("--------------------------\n\n"); 
 
 // // remove Customer Dave Bennett (customer_id 26) and Martin Scott (customer_id 71)
 
