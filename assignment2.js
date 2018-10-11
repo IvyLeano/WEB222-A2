@@ -104,22 +104,25 @@ var CustomerDB = {
         let position = this.customers.findIndex(i => i.data.customer_id == customer_id);
 
         // Check if the address is not being used by another customer
-        let counter = 0;
+        let customersMatchingAddress = 0;
         
         // Check the customer's array if there's another customer that is using the same address_id, if so, increase the counter
         this.customers.forEach(customer => {
             if (customer.data.address_id == customerWithId[0].data.address_id)
-                counter++;
+            customersMatchingAddress++;
         });
 
         // If there's only 1 match (for the current customer), allow the delete
-        if (counter == 1) {
+        if (customersMatchingAddress == 1) {
             this.customers.splice(position, 1);
 
             // Find the index of the customer's address_id in the addresses array, delete that element as well
-            let positionInAddresses = this.addresses.findIndex(i => i.data.address_id == customerWithId[0].data.address_id);
-            this.addresses.splice(positionInAddresses, 1);
-        }
+            this.removeAddressById(customerWithId[0].data.address_id);
+        } 
+
+        // If there's another match with the address, just delete the customer, not the
+        if (customersMatchingAddress > 1)
+            this.customers.splice(position, 1);
     },
     addAddress: function(address) {
         this.addresses.push(address);
@@ -133,14 +136,14 @@ var CustomerDB = {
         return addressWithId;
     },
     outputAllAddresses: function() {
-        console.log(`All Addresses - ${this.addresses.length}`);
+        console.log(`All Addresses\n`);
         this.addresses.forEach(function(address) {
-            console.log(`Address ${address.data.address_id}: ${address.data.city}, ${address.data.province}. ${address.data.postal_code}`)
+            console.log(`Address ${address.data.address_id}: ${address.data.address} ${address.data.city}, ${address.data.province}. ${address.data.postal_code}`)
         });
     },
     removeAddressById: function(address_id) {
-        let addressWithId = this.addresses.filter(address => address.data.address_id == address_id);
-        // Remove the addressWithId
+        let positionInAddresses = this.addresses.findIndex(i => i.data.address_id == address_id);
+            this.addresses.splice(positionInAddresses, 1);
     },
     addStore: function(storeObj) {
         this.stores.push(storeObj);
@@ -213,18 +216,18 @@ CustomerDB.removeCustomerById(26);
 CustomerDB.removeCustomerById(71);
 console.log("--------------------------\n\n"); 
 
-// // output all customers again
-// // NOTE: Dave Bennett and Martin Scott should be missing
+// output all customers again
+// NOTE: Dave Bennett and Martin Scott should be missing
 
-// console.log("CustomerDB.outputAllCustomers();\n\n--------------------------\n\n");
-// CustomerDB.outputAllCustomers();
-// console.log("--------------------------\n\n");
+console.log("CustomerDB.outputAllCustomers();\n\n--------------------------\n\n");
+CustomerDB.outputAllCustomers();
+console.log("--------------------------\n\n");
 
-// // output all addresses again
-// // NOTE: only addrss 287 Brant St. Apt 4A Waterdown, ON. R93G3P should be missing
+// output all addresses again
+// NOTE: only addrss 287 Brant St. Apt 4A Waterdown, ON. R93G3P should be missing
 
-// console.log("CustomerDB.outputAllAddresses();\n\n--------------------------\n\n");
-// CustomerDB.outputAllAddresses();
-// console.log("--------------------------\n\n"); 
+console.log("CustomerDB.outputAllAddresses();\n\n--------------------------\n\n");
+CustomerDB.outputAllAddresses();
+console.log("--------------------------\n\n"); 
 
-// // */
+// */
