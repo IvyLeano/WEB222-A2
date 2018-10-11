@@ -41,8 +41,9 @@ var CustomerDB = {
     insertData: function(allData) {
         allData.forEach(data => {
             if (data.type === 'customer') {
-                data.type.add_date = Date.now();
-                this.addCustomer(data);
+                let date = new Date();
+                data.data.add_date = date.toUTCString();
+                this.customers.push(data);
             } else if (data.type === 'store')
                 this.addStore(data);
             else if (data.type === 'address') 
@@ -54,30 +55,35 @@ var CustomerDB = {
         this.customers.push(customerObj);
     },
     outputCustomerById: function(customer_id) {
+        
+        // Filter out and find the customer that matches the 'customer_id' that is passed as an argument above
         let customer = this.customers.filter(customer => customer.data.customer_id == customer_id);
+        
+        // Find the address id needed
+        let addressIdToFind = customer[0].data.address_id;
+
+        // Find the address details of the customer currently working with ... return their address
         let customerAddress = this.addresses.filter(address => {
-            if (address.data.address_id == customer.data.address_id)
+            if (address.data.address_id == addressIdToFind)
                 return address;
         });
 
-        console.log(`Customer ${customer.data.customer_id}: ${customer.data.first_name} ${customer.data.last_name} (${customer.data.email})`);
-        console.log(`Home address: ${customerAddress.data.city}, ${customer.data.province}. ${customer.data.postal_code}`);
+        // Output
+        console.log(`Customer ${customer[0].data.customer_id}: ${customer[0].data.first_name} ${customer[0].data.last_name} (${customer[0].data.email})`);
+        console.log(`Home address: ${customerAddress[0].data.city}, ${customerAddress[0].data.province}. ${customerAddress[0].data.postal_code}`);
+        console.log(`Joined: ${customer[0].data.add_date}\n`);
     },
     outputAllCustomers: function() {
+        console.log(`All Customers\n`);
         this.customers.forEach(customer => {
-            // console.log(`Customer ${customer.data.customer_id}: ${customer.data.first_name} ${customer.data.last_name} (${customer.data.email})`);
-            
-            // let address = this.getAddressById(customer.data.address_id);
-            // console.log(`Home Add`)
             this.outputCustomerById(customer.data.customer_id);
-
         });
     },
     outputCustomersByStore: function(store_id) {
         let customersWithStore_Id = this.customers.filter(customer => customer.data.store_id == store_id);
         let store = this.getStoreById(store_id);
 
-        console.log(`Customers in Store: ${store.name}`);
+        // console.log(`Customers in Store: ${store.name}`);
 
         customersWithStore_Id.forEach(customer => {
             console.log(`Customer ${customer.data.customer_id}: ${customer.data.first_name} ${customer.data.last_name} (${customer.data.email})`);
