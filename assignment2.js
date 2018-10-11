@@ -41,6 +41,9 @@ var CustomerDB = {
     insertData: function(allData) {
         allData.forEach(data => {
             if (data.type === 'customer') {
+
+                // For all customers...
+                // Create a date object and add it to the current customer's data.add_date property (in UTC format)
                 let date = new Date();
                 data.data.add_date = date.toUTCString();
                 this.customers.push(data);
@@ -51,7 +54,8 @@ var CustomerDB = {
         });
     },
     addCustomer: function(customerObj) {
-        customerObj.add_date = Date.now();
+        let date = new Date();
+        customerObj.data.add_date = date.toUTCString();
         this.customers.push(customerObj);
     },
     outputCustomerById: function(customer_id) {
@@ -75,15 +79,15 @@ var CustomerDB = {
     },
     outputAllCustomers: function() {
         console.log(`All Customers\n`);
+
+        // For each customer, execute the outputCustomerById(...) method
         this.customers.forEach(customer => {
             this.outputCustomerById(customer.data.customer_id);
         });
     },
     outputCustomersByStore: function(store_id) {
         let customersWithStore_Id = this.customers.filter(customer => customer.data.store_id == store_id);
-        let store = this.getStoreById(store_id);
-
-        // console.log(`Customers in Store: ${store.name}`);
+        // let store = this.getStoreById(store_id);
 
         customersWithStore_Id.forEach(customer => {
             console.log(`Customer ${customer.data.customer_id}: ${customer.data.first_name} ${customer.data.last_name} (${customer.data.email})`);
@@ -95,7 +99,27 @@ var CustomerDB = {
     },
     removeCustomerById: function(customer_id) {
         let customerWithId = this.customers.filter(customer => customer.data.customer_id == customer_id);
-        // Remove customer with index of customer_id
+        
+        // Find the index of the customers where data.customer_id == customer_id
+        let position = this.customers.findIndex(i => i.data.customer_id == customer_id);
+
+        // Check if the address is not being used by another customer
+        let counter = 0;
+        
+        // Check the customer's array if there's another customer that is using the same address_id, if so, increase the counter
+        this.customers.forEach(customer => {
+            if (customer.data.address_id == customerWithId[0].data.address_id)
+                counter++;
+        });
+
+        // If there's only 1 match (for the current customer), allow the delete
+        if (counter == 1) {
+            this.customers.splice(position, 1);
+
+            // Find the index of the customer's address_id in the addresses array, delete that element as well
+            let positionInAddresses = this.addresses.findIndex(i => i.data.address_id == customerWithId[0].data.address_id);
+            this.addresses.splice(positionInAddresses, 1);
+        }
     },
     addAddress: function(address) {
         this.addresses.push(address);
@@ -176,18 +200,18 @@ console.log("CustomerDB.outputAllStores();\n\n--------------------------\n\n");
 CustomerDB.outputAllStores();
 console.log("--------------------------\n\n"); 
 
-// // output all customers in the "Main Branch"
+// output all customers in the "Main Branch"
 
 console.log("CustomerDB.outputCustomersByStore(297);\n\n--------------------------\n\n");
 CustomerDB.outputCustomersByStore(297);
 console.log("--------------------------\n\n"); 
 
-// // remove Customer Dave Bennett (customer_id 26) and Martin Scott (customer_id 71)
+// remove Customer Dave Bennett (customer_id 26) and Martin Scott (customer_id 71)
 
-// console.log("CustomerDB.removeCustomerById(26);\nCustomerDB.removeCustomerById(71);\n\n");
-// CustomerDB.removeCustomerById(26);
-// CustomerDB.removeCustomerById(71);
-// console.log("--------------------------\n\n"); 
+console.log("CustomerDB.removeCustomerById(26);\nCustomerDB.removeCustomerById(71);\n\n");
+CustomerDB.removeCustomerById(26);
+CustomerDB.removeCustomerById(71);
+console.log("--------------------------\n\n"); 
 
 // // output all customers again
 // // NOTE: Dave Bennett and Martin Scott should be missing
