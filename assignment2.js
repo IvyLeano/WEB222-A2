@@ -40,11 +40,11 @@ var CustomerDB = {
     stores: [],
     insertData: function(allData) {
         allData.forEach(data => {
-            if (data.type === 'customer') {
+            if (data.type === 'customer')
                 this.addCustomer(data);
-            } else if (data.type === 'store')
+            if (data.type === 'store')
                 this.addStore(data);
-            else if (data.type === 'address') 
+            if (data.type === 'address') 
                 this.addAddress(data);
         });
     },
