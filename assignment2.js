@@ -41,12 +41,7 @@ var CustomerDB = {
     insertData: function(allData) {
         allData.forEach(data => {
             if (data.type === 'customer') {
-
-                // For all customers...
-                // Create a date object and add it to the current customer's data.add_date property (in UTC format)
-                let date = new Date();
-                data.data.add_date = date.toUTCString();
-                this.customers.push(data);
+                this.addCustomer(data);
             } else if (data.type === 'store')
                 this.addStore(data);
             else if (data.type === 'address') 
@@ -153,7 +148,7 @@ var CustomerDB = {
         console.log(store);
     },
     outputAllStores: function() {
-        console.log(`All Stores`);
+        console.log(`All Stores\n`);
         
         this.stores.forEach(store => {
             let storeAddressDetails = this.getAddressById(store.data.address_id);
