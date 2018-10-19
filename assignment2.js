@@ -27,9 +27,6 @@ var allData = [
     {type:"address", data:{address_id: 5464, address: "11 New St. Apt 2B", city: "Brampton", province: "ON", postal_code: "L694R7"}},
 ];
 
-
-
-
  /*  Write your CustomerDB Object Here.  Do not forget to uncomment the "TEST DATA" section
      when you're ready.  Your code is required to run against these tests before you submit */
 
@@ -48,11 +45,13 @@ var CustomerDB = {
                 this.addAddress(data);
         });
     },
+    
     addCustomer: function(customerObj) {
         let date = new Date();
         customerObj.data.add_date = date.toUTCString();
         this.customers.push(customerObj);
     },
+    
     outputCustomerById: function(customer_id) {
         
         // Filter out and find the customer that matches the 'customer_id' that is passed as an argument above
@@ -69,17 +68,19 @@ var CustomerDB = {
 
         // Output
         console.log(`Customer ${customer[0].data.customer_id}: ${customer[0].data.first_name} ${customer[0].data.last_name} (${customer[0].data.email})`);
-        console.log(`Home address: ${customerAddress[0].data.city}, ${customerAddress[0].data.province}. ${customerAddress[0].data.postal_code}`);
-        console.log(`Joined: ${customer[0].data.add_date}\n`);
+        console.log(`Home Address: ${customerAddress[0].data.address} ${customerAddress[0].data.city}, ${customerAddress[0].data.province}. ${customerAddress[0].data.postal_code}`);
+        console.log(`Joined: ${customer[0].data.add_date}\n\n`);
     },
+    
     outputAllCustomers: function() {
-        console.log(`All Customers\n`);
+        console.log(`All Customers\n\n`);
 
         // For each customer, execute the outputCustomerById(...) method
         this.customers.forEach(customer => {
             this.outputCustomerById(customer.data.customer_id);
         });
     },
+    
     outputCustomersByStore: function(store_id) {
         let customersWithStore_Id = this.customers.filter(customer => customer.data.store_id == store_id);
         // let store = this.getStoreById(store_id);
@@ -89,9 +90,10 @@ var CustomerDB = {
 
             let address = this.getAddressById(customer.data.address_id);
             console.log(`Home address: ${address[0].data.city}, ${address[0].data.province}. ${address[0].data.postal_code}`);
-            console.log(`Joined: ${customer.data.add_date}\n`);
+            console.log(`Joined: ${customer.data.add_date}\n\n`);
         })
     },
+    
     removeCustomerById: function(customer_id) {
         let customerWithId = this.customers.filter(customer => customer.data.customer_id == customer_id);
         
@@ -119,9 +121,11 @@ var CustomerDB = {
         if (customersMatchingAddress > 1)
             this.customers.splice(position, 1);
     },
+    
     addAddress: function(address) {
         this.addresses.push(address);
     },
+    
     getAddressById: function(address_id) {
         let addressWithId = this.addresses.filter(address => {
             if (address_id === address.data.address_id)
@@ -130,30 +134,35 @@ var CustomerDB = {
 
         return addressWithId;
     },
+    
     outputAllAddresses: function() {
-        console.log(`All Addresses\n`);
+        console.log(`All Addresses\n\n`);
         this.addresses.forEach(function(address) {
-            console.log(`Address ${address.data.address_id}: ${address.data.address} ${address.data.city}, ${address.data.province}. ${address.data.postal_code}`)
+            console.log(`Address ${address.data.address_id}: ${address.data.address} ${address.data.city}, ${address.data.province}. ${address.data.postal_code}\n`)
         });
     },
+    
     removeAddressById: function(address_id) {
         let positionInAddresses = this.addresses.findIndex(i => i.data.address_id == address_id);
             this.addresses.splice(positionInAddresses, 1);
     },
+    
     addStore: function(storeObj) {
         this.stores.push(storeObj);
     },
+    
     getStoreById: function(store_id) {
         let store = this.stores.filter(store => store.data.store_id == store_id);
         console.log(store);
     },
+    
     outputAllStores: function() {
-        console.log(`All Stores\n`);
+        console.log(`All Stores\n\n`);
         
         this.stores.forEach(store => {
             let storeAddressDetails = this.getAddressById(store.data.address_id);
             console.log(`Store ${store.data.store_id}: ${store.data.name}`);
-            console.log(`Location: ${storeAddressDetails[0].data.address} ${storeAddressDetails[0].data.city}, ${storeAddressDetails[0].data.province}. ${storeAddressDetails[0].data.postal_code}`);
+            console.log(`Location: ${storeAddressDetails[0].data.address} ${storeAddressDetails[0].data.city}, ${storeAddressDetails[0].data.province}. ${storeAddressDetails[0].data.postal_code}\n\n`);
         });
     }
 };
